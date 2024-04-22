@@ -1,65 +1,43 @@
-grafo_questao = {
-    'A': [('B', 3), ('C', 8), ('D', 4), ('E', 7)],
-    'B': [('A', 3), ('C', 10), ('D', 9), ('E', 2)],
-    'C': [('A', 8), ('B', 10), ('D', 6), ('E', 5)],
-    'D': [('A', 4), ('B', 9), ('C', 6), ('E', 1)],
-    'E': [('A', 7), ('B', 2), ('C', 5), ('D', 1)]
+import itertools
+
+matriz_distancias = {
+    'A': {'B': 3, 'C': 8, 'D': 4, 'E': 7},
+    'B': {'A': 3, 'C': 10, 'D': 9, 'E': 2},
+    'C': {'A': 8, 'B': 10, 'C': 0, 'E': 5},
+    'D': {'A': 4, 'B': 9, 'D': 0, 'E': 1},
+    'E': {'A': 7, 'B': 2, 'C': 5, 'D': 1, 'E': 0}
 }
 
-def Caminho_bruteforce(inicio, grafo):
-    Restantes = list(grafo)
-    Restantes.remove(inicio)
 
-    Caminho = []
-    Caminho.append(inicio)
-
-    distancias = 0
-
-    Possibilidades = []
-
-
-    for vertice , distancia in grafo[inicio]:
-        distancias += distancia
-        Caminho.append(vertice)
-
-        for vertice2, distancia2 in grafo[vertice]:
-            if vertice2 in Caminho:
-                pass
-            else:
-                distancias += distancia2
-                Caminho.append(vertice2)
-
-                for vertice3, distancia3 in grafo[vertice2]:
-                    if vertice3 in Caminho:
-                        pass
-                    else:
-                        distancias += distancia3
-                        Caminho.append(vertice3)
-
-                        for vertice4, distancia4 in grafo[vertice3]:
-                            if vertice4 in Caminho:
-                                pass
-                            else:
-                                distancias += distancia4
-                                Caminho.append(vertice4)
-                                for vertice5, distancia5 in grafo[inicio]:
-                                    if vertice5 == vertice4:
-                                        Caminho.append(inicio)
-                                        distancias += distancia5
-                                        print(Caminho,distancias)
-                                        Caminho.pop()
-                                        distancias -= distancia5
-                                distancias -= distancia4
-                                Caminho.remove(vertice4)
-                        distancias -= distancia3
-                        Caminho.remove(vertice3)
-                distancias -= distancia2
-                Caminho.remove(vertice2)
-        distancias -= distancia
-        Caminho.remove(vertice)
+def Distancia(caminho, grafo):
+    anterior = 0
+    distancia = 0
+    for vertice in caminho:
+        if anterior and not vertice in grafo[anterior]:
+            distancia = float('inf')
+            break
+        distancia += anterior and grafo[anterior][vertice]
+        anterior = vertice
+    return distancia
 
 
+def caixeiro_viajante(inicio, grafo, fim = 0):
+    rotas_meio = list(grafo)
+    rotas_meio.remove(inicio)
+    rotas_totais = []
+    for rota in itertools.permutations(rotas_meio):
+        rota_final = [inicio]
+        rota_final.extend(list(rota))
+        if not fim or inicio == fim:
+            rota_final.append(inicio)
+        else:
+            while rota_final[-1] != fim:
+                rota_final.pop()
+        distancia_final = Distancia(rota_final, grafo)
+        if not distancia_final == float('inf') and not tuple((distancia_final,rota_final)) in rotas_totais:
+            rotas_totais.append(tuple((distancia_final,rota_final)))
+    rotas_totais.sort()
+    print(rotas_totais)
 
 
-
-Caminho_bruteforce('A',grafo_questao)
+caixeiro_viajante('A', matriz_distancias, 'B')
