@@ -1,0 +1,16 @@
+import pandas as pd
+import os
+def Novas_Pastas_Clientes(Lista,Saida,Cliente = 'CLIENTE'):
+    Lista_Clientes = pd.read_excel(Lista)
+    Lista_Clientes = Lista_Clientes[Cliente].to_list()
+    os.chdir(Saida)
+    for Cliente in Lista_Clientes:
+
+        if os.path.exists(Cliente):
+            print('%s Já existe.' %Cliente)
+        else:
+            os.mkdir(Cliente)
+
+Lista = r'.xlsx'
+Saida = r'<>'
+Novas_Pastas_Clientes(Lista,Saida)
