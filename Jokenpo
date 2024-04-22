@@ -1,0 +1,16 @@
+import random
+
+def JKP(Jogada1):
+    JKP = ['pedra', 'papel', 'tesoura']
+    J1 = JKP.index(Jogada1)
+    J2 = random.randint(0,2)
+    print(JKP[J2])
+    Win = ('Empatou!' if J1 == J2
+           else 'Você Ganhou!' if (J2+1)%3 == J1
+           else 'Você Perdeu')
+    print(Win)
+while True:
+    Jogada = input('Pedra, Papel ou Tesoura?\n')
+    Jogada = Jogada.lower()
+    Jogada = Jogada.lstrip()
+    JKP(Jogada)
